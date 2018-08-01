@@ -382,12 +382,52 @@ func (f *Frontend) InitJobApi() {
 							switch st[0] {
 							case "stage":
 								if m.Stage == st[1] {
+									nb := &models.Job{}
+									nb.Fill()
+									nb.Uuid = uuid.NewRandom()
+									nb.StartTime = time.Now()
+									nb.Previous = cj.Uuid
+									nb.Machine = m.Uuid
+									nb.Stage = m.Stage
+									nb.BootEnv = m.BootEnv
+									nb.Workflow = m.Workflow
+									nb.CurrentIndex = i
+									nb.NextIndex = i + 1
+									nb.Task = m.Tasks[i]
+									nb.State = "finished"
+									nb.ExitState = "complete"
+									nb.EndTime = time.Now()
+									if _, err = rt.Create(nb); err != nil {
+										code = http.StatusInternalServerError
+										return
+									}
+									cj = backend.ModelToBackend(nb).(*backend.Job)
 									continue
 								}
 								rt.Infof("Machine %s is changing stage from %s to %s", b.Machine.String(), m.Stage, st[1])
 								m.Stage = st[1]
 							case "bootenv":
 								if m.BootEnv == st[1] {
+									nb := &models.Job{}
+									nb.Fill()
+									nb.Uuid = uuid.NewRandom()
+									nb.StartTime = time.Now()
+									nb.Previous = cj.Uuid
+									nb.Machine = m.Uuid
+									nb.Stage = m.Stage
+									nb.BootEnv = m.BootEnv
+									nb.Workflow = m.Workflow
+									nb.CurrentIndex = i
+									nb.NextIndex = i + 1
+									nb.Task = m.Tasks[i]
+									nb.State = "finished"
+									nb.ExitState = "complete"
+									nb.EndTime = time.Now()
+									if _, err = rt.Create(nb); err != nil {
+										code = http.StatusInternalServerError
+										return
+									}
+									cj = backend.ModelToBackend(nb).(*backend.Job)
 									continue
 								}
 								rt.Infof("Machine %s is changing bootenv from %s to %s", b.Machine.String(), m.BootEnv, st[1])
