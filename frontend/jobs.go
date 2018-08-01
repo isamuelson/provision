@@ -462,6 +462,9 @@ func (f *Frontend) InitJobApi() {
 				if strings.Contains(thisTask, ":") {
 					b.State = "finished"
 					b.ExitState = "complete"
+					if b.EndTime.IsZero() {
+						b.EndTime = time.Now() // We don't transition so set EndTime
+					}
 					if oldM.Stage != m.Stage {
 						m.Params["change-stage/map"] = map[string]string{oldM.Stage: m.Stage}
 					}
